@@ -123,6 +123,8 @@ jobs:
             echo "tag=latest" >> $GITHUB_ENV
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "tag=pr-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          else
+            echo "tag=manual-${{ github.run_number }}" >> $GITHUB_ENV
           fi
 
       - name: Build and push Docker Image
