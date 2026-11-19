@@ -25,5 +25,6 @@ help:
 
 pre-commit:
 	pip install pre-commit shandy-sqlfmt
+	pre-commit autoupdate
 	pre-commit install
 	pre-commit run --all-files
