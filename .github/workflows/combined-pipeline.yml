@@ -7,6 +7,10 @@ on:
   push:
     branches:
       - main
+  release:
+    types:
+      - published # Trigger when a release is published
+  workflow_dispatch: # Manual trigger for convenience
 
 jobs:
   # Pre-commit job
@@ -111,12 +115,14 @@ jobs:
       - name: Determine Image Tag
         id: tag
         run: |
-          if [ "${{ github.event_name }}" == "push" ]; then
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "tag=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+          elif [ "${{ github.ref_type }}" == "tag" ]; then
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_ENV
+          elif [ "${{ github.event_name }}" == "push" ]; then
             echo "tag=latest" >> $GITHUB_ENV
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
             echo "tag=pr-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-          else
-            echo "tag=dev-${{ github.sha }}" >> $GITHUB_ENV
           fi
 
       - name: Build and push Docker Image
